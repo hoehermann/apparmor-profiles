@@ -1,0 +1,55 @@
+# Last Modified: Wed Mar 18 19:30:51 2020
+#include <tunables/global>
+
+# vim:syntax=apparmor
+# AppArmor policy for teams
+# ###AUTHOR###
+# ###COPYRIGHT###
+# ###COMMENT###
+
+
+/usr/share/teams/teams {
+  #include <abstractions/audio>
+  #include <abstractions/base>
+  #include <abstractions/dbus-session-strict>
+  #include <abstractions/dbus-strict>
+  #include <abstractions/dconf>
+  #include <abstractions/gnome>
+  #include <abstractions/ibus>
+  #include <abstractions/lightdm>
+  #include <abstractions/nameservice>
+  #include <abstractions/openssl>
+
+  network netlink dgram,
+
+  deny /bin/dash x,
+  deny /proc/sys/kernel/yama/ptrace_scope r,
+  deny owner /home/*/#* mrw,
+  deny owner /home/*/.config/autostart/teams.desktop w,
+  deny owner /home/*/.config/user-dirs.dirs r,
+  deny owner /home/*/.* w,
+  deny owner /home/*/.pki/nssdb/cert9.db rwk,
+  deny owner /home/*/.pki/nssdb/key4.db rwk,
+  deny owner /home/*/.pki/nssdb/pkcs11.txt w,
+  deny owner /home/*/CS_skylib/ w,
+  deny owner /home/*/SkypeRT/ w,
+  deny owner /proc/*/oom_score_adj w,
+
+  /proc/** r,
+  /proc/driver/nvidia/params r,
+  /proc/filesystems r,
+  /proc/meminfo r,
+  /proc/modules r,
+  /run/nvidia-xdriver-* mrwk,
+  owner "/home/*/.config/Microsoft/Microsoft Teams/" rw,
+  owner "/home/*/.config/Microsoft/Microsoft Teams/**" rwk,
+  owner /home/*/.config/teams/ r,
+  owner /home/*/.config/teams/** rw,
+  owner /home/*/.Xauthority r,
+  owner /home/*/.cache/fontconfig/* r,
+  owner /home/*/.local/share/fonts/** r,
+  owner /home/*/.local/share/icons/** r,
+  owner /home/*/.local/share/mime/* r,
+  owner /home/*/.nv/GLCache/** rwk,
+  owner /home/*/.pki/nssdb/pkcs11.txt r,
+}
