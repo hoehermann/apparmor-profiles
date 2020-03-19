@@ -1,0 +1,39 @@
+# vim:syntax=apparmor
+
+#include <tunables/global> # benötigt für abstractions/base
+
+/home/*/Fachbereiche/BBA/Veranstaltung/SVN/** {
+  #include <abstractions/base>
+  #include <abstractions/dbus>
+  #include <abstractions/dbus-session>
+  #include <abstractions/dbus-accessibility>
+  /run/user/*/bus rw,
+
+  # für display und Debuganzeigen
+  #include <abstractions/X>
+  /usr/share/themes/** r,
+  /etc/gtk-3.0/settings.ini r,
+
+  /proc/** r, # TODO: einschränken auf /proc/<eigene PID>
+
+  # OpenCV sucht implizit nach verschiedenen Capture-Karten und greift dabei hierauf zu:
+  /sys/** r,
+  /dev/** r,
+  /dev/ r,
+  network netlink raw, # TODO: für produktiven Einsatz verbieten?
+  /run/udev/data/** r,
+  /etc/udev/udev.conf r,
+  /usr/lib/x86_64-linux-gnu/libgphoto2*/*/*.so rm, # OpenCV lädt neuerdings libgphoto2
+  /etc/fstab r, # WTF
+
+  # Systeme mit nvidia fragen evtl. anwendungsspezifische Profile ab
+  #include <abstractions/nvidia>
+  /usr/share/nvidia-*/* r,
+  /usr/local/** rm, # for custom cuda
+  /etc/OpenCL/** r,
+  
+  /tmp/** rw,
+  /home/*/Fachbereiche/BBA/Veranstaltung/SVN/** r,
+  /home/*/Fachbereiche/BBA/** r, # TODO: für produktiven Einsatz verbieten
+  /opt/opencv/** r,
+}
